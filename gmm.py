@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jul 25 10:56:43 2018
-
-@author: mohit
-"""
-
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import pandas as pd
 import string
 import pickle
