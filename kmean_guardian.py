@@ -36,12 +36,10 @@ pipe = Pipeline([
     ('clf',KMeans(3, random_state=0))
 ])
 
-pipe.fit(X_train,y_train)
-p = pipe.predict(X_train)
-print(" train accuracy: ", accuracy_score(y_train, p))
-p_t = pipe.predict(X_test)
-print(" test accuracy: ", accuracy_score(y_test, p_t))
+pipe.fit(X)
+p = pipe.predict(X_test)
+print(" train accuracy: ", accuracy_score(y_test, p))
 
-plt.scatter(X_train ,y_train , c=p, s=40, cmap='viridis');
+# plt.scatter(X, y, c=p, s=40, cmap='viridis');
 # plt.scatter(X[:, 0], X[:, 1], c=p_t, s=40, cmap='viridis');
-plt.show()
+# plt.show()

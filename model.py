@@ -1,41 +1,56 @@
-import pandas as pd
-import pickle
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn import svm
-from sklearn.metrics import accuracy_score
+# from get_embedding import sent_embedding
+# import en_core_web_sm
+# nlp = en_core_web_sm.load()
+import spacy
+nlp = spacy.load('en')
+
+print("\n ******** Summary for interest rate ********\n")
+
+with open("/home/dipesh/auto_cca-master/test.txt") as f:
+    sentences = f.readlines()
+
+# SPACY
+sentence1 = "interest rate"
+token1 = nlp(sentence1.decode('utf8'))
+
+X = []
+for sentence in sentences:
+    doc = nlp(sentence.decode('utf8'))
+    for d in doc.sents:
+        X.append((d.text.encode('utf8'),token1.similarity(d)))
 
 
-def train_model(dataframe,label=''):
-    if label :
-        dataframe = df[df['labels'] == label]
-        X = dataframe['data']
-        y = dataframe['labels']
-    else:
-        X = dataframe['data']
-        y = dataframe['labels']
+def Sort_Tuple(tup):
+    # getting length of list of tuples
+    lst = len(tup)
+    for i in range(0, lst):
+        for j in range(0, lst - i - 1):
+            if (tup[j][1] > tup[j + 1][1]):
+                temp = tup[j]
+                tup[j] = tup[j + 1]
+                tup[j + 1] = temp
+    return tup
 
-    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.2,random_state=2)
+X = Sort_Tuple(X)
 
-    pl = Pipeline([
-        ('vectorizer',TfidfVectorizer(stop_words='english',ngram_range=(1,3),min_df=3,max_df=100,max_features=None)),
-        ('clf',svm.OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1))
-    ])
-
-    pl.fit(X_train,y_train)
-
-    preds = pl.predict(X_train)
-    print(" train accuracy: ", accuracy_score(y_train, preds))
-    preds_test = pl.predict(X_test)
-    print(" test accuracy: ", accuracy_score(y_test, preds_test))
-
-    with open('oneclass_tfidf_'+label+'.pickle', 'wb') as fo:
-        pickle.dump(pl,fo)
+for x in X[::-1]:
+    if "$" in x[0]:
+        print(x[0],x[1])
 
 
-# colnames=['data','label']
-df = pd.read_csv('train.csv')
-# label = 'football'
-# train_model(df,label)
-train_model(df)
+print("\n ******** Summary for foreign curreny exchange rate ********\n")
+
+sentence2 = "operating income"
+token2 = nlp(sentence2.decode('utf8'))
+
+Y = []
+for sentence in sentences:
+    doc1 = nlp(sentence.decode('utf8'))
+    for d1 in doc1.sents:
+        Y.append((d1.text.encode('utf8'),token2.similarity(d1)))
+
+Y = Sort_Tuple(Y)
+
+for y in Y[::-1]:
+    # if "operating" in y[0]:
+    print(y[0],y[1])
